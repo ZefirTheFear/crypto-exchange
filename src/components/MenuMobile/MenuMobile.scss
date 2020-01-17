@@ -1,0 +1,29 @@
+@import "../../_variables.scss";
+
+.menu-mobile {
+  position: fixed;
+  top: 60px;
+  left: -100%;
+  width: 100%;
+  background: $menu-bg;
+  transition: $main-transition;
+}
+
+.menu-mobile_opened {
+  left: 0;
+}
+
+.menu-mobile__item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  color: #fff;
+  text-transform: uppercase;
+  border-bottom: 1px solid $border;
+  cursor: pointer;
+
+  &:hover {
+    color: $menu-hover;
+  }
+}

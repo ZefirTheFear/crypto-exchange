@@ -1,21 +1,37 @@
-import React from "react";
+import React, { useContext } from "react";
 
-import { AiOutlineMenuFold } from "react-icons/ai";
-
+import Context from "../../context";
 import logoMark from "../../assets/img/bittrex-logo-mark.svg";
 import wordMark from "../../assets/img/bittrex-word-mark-global.svg";
 
 import "./Header.scss";
 
 const Header = () => {
-  const scrollTo = node => {
-    node.scrollIntoView({ behavior: "smooth" });
+  const context = useContext(Context);
+
+  const logoClick = () => {
+    context.scrollTo(document.body);
+    context.closeMenu();
+  };
+
+  const toggleMenu = () => {
+    if (!context.isShownMenu) {
+      openMenu();
+    } else {
+      context.closeMenu();
+    }
+  };
+
+  const openMenu = () => {
+    document.querySelector(".menu__btn").classList.add("menu__btn_close");
+    document.querySelector(".menu-mobile").classList.add("menu-mobile_opened");
+    context.setIsShownMenu(true);
   };
 
   return (
     <header className="header">
       <div className="header__inner">
-        <div className="header__logo">
+        <div className="header__logo" onClick={logoClick}>
           <img src={logoMark} alt="logo" className="header__logo-img-mark" />
           <img src={wordMark} alt="logo" className="header__logo-word-mark" />
         </div>
@@ -23,7 +39,7 @@ const Header = () => {
           <div
             className="header__menu-item"
             onClick={() => {
-              scrollTo(document.querySelector(".calculator"));
+              context.scrollTo(document.querySelector(".calculator"));
             }}
           >
             калькулятор
@@ -31,7 +47,7 @@ const Header = () => {
           <div
             className="header__menu-item"
             onClick={() => {
-              scrollTo(document.querySelector(".exchange"));
+              context.scrollTo(document.querySelector(".exchange"));
             }}
           >
             обмен
@@ -39,7 +55,7 @@ const Header = () => {
           <div
             className="header__menu-item"
             onClick={() => {
-              scrollTo(document.querySelector(".about-us"));
+              context.scrollTo(document.querySelector(".about-us"));
             }}
           >
             о нас
@@ -47,14 +63,16 @@ const Header = () => {
           <div
             className="header__menu-item"
             onClick={() => {
-              scrollTo(document.querySelector(".contacts"));
+              context.scrollTo(document.querySelector(".contacts"));
             }}
           >
             контакты
           </div>
         </nav>
-        <div className="header__menu-mobile-toggler">
-          <AiOutlineMenuFold />
+        <div className="menu__btn" onClick={toggleMenu}>
+          <div className="menu__btn-line" />
+          <div className="menu__btn-line" />
+          <div className="menu__btn-line" />
         </div>
       </div>
     </header>
