@@ -17,7 +17,7 @@ const MenuMobile = () => {
       <div
         className="menu-mobile__item"
         onClick={() => {
-          closeMenuNGoToNode(document.querySelector(".calculator"));
+          closeMenuNGoToNode(document.querySelector(".calculator-section"));
         }}
       >
         калькулятор

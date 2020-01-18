@@ -19,7 +19,13 @@
 }
 
 .header__logo {
+  height: 50%;
+  margin-right: 5rem;
   cursor: pointer;
+}
+
+.header__logo-img {
+  height: 100%;
 }
 
 .header__logo-img-mark {
@@ -31,7 +37,7 @@
 
 .header__menu {
   display: flex;
-  color: #fff;
+  color: $menu-color;
 
   @media (max-width: 767px) {
     display: none;
@@ -53,7 +59,7 @@
   display: none;
   margin-left: auto;
   font-size: 2rem;
-  color: #fff;
+  color: $menu-color;
   cursor: pointer;
   transition: $menu-btn-transition;
 
@@ -89,6 +95,6 @@
   width: 28px;
   height: 3px;
   margin: 5px 0;
-  background: #fff;
+  background: $menu-color;
   transition: $menu-btn-transition;
 }

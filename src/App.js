@@ -15,7 +15,11 @@ function App() {
   const [isShownMenu, setIsShownMenu] = useState(false);
 
   const scrollTo = node => {
-    node.scrollIntoView({ behavior: "smooth" });
+    const headerOffset = 60;
+    window.scrollTo({
+      top: window.pageYOffset + node.getBoundingClientRect().top - headerOffset,
+      behavior: "smooth"
+    });
   };
 
   const closeMenu = () => {

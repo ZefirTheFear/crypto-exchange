@@ -4,18 +4,25 @@
   justify-content: center;
   align-items: center;
   height: 595px;
-  background: url(../../assets/img/Frame.svg) center no-repeat #0b3e69;
+  max-height: calc(100vh - 60px);
+  background: url(../../assets/img/main.svg) center no-repeat #0b3e69;
   object-fit: contain;
 }
 
 .hero__inner {
   text-align: center;
+  width: 450px;
+  max-width: 80vw;
 }
 
 .hero__text {
-  margin-top: 1.5rem;
+  margin: 1.5rem 0;
   font-size: 1.5rem;
   font-weight: 300;
   color: #fff;
   text-transform: uppercase;
+
+  @media (max-width: 767px) {
+    font-size: 1.1rem;
+  }
 }
