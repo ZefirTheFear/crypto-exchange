@@ -1,7 +1,73 @@
+@import "../../_variables.scss";
+
 .contacts {
-  height: 600px;
+  padding: 2rem 0;
+  background: $contacts-bg;
+  color: $contacts-color;
   display: flex;
   justify-content: center;
   align-items: center;
   text-transform: uppercase;
+}
+
+.contacts__inner {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.contacts__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin: 0 2rem 2rem 2rem;
+
+  @media (max-width: 767px) {
+    margin: 0 0.5rem 2rem 0.5rem;
+  }
+}
+
+.contacts__info-unit {
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  font-size: 1.5rem;
+
+  @media (max-width: 767px) {
+    font-size: 1rem;
+  }
+}
+
+.contacts__info-unit-icon {
+  margin: 3px 20px 0 0;
+
+  @media (max-width: 767px) {
+    margin: 2px 10px 0 0;
+  }
+}
+
+.contacts__logo {
+  margin-bottom: 30px;
+
+  @media (max-width: 767px) {
+    margin-bottom: 20px;
+  }
+}
+
+.contacts__map {
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.contacts__map-iframe {
+  height: 400px;
+  width: 600px;
+  max-width: 600px;
+  max-height: 80vh;
+
+  @media (max-width: 767px) {
+    width: 90vw;
+  }
 }
