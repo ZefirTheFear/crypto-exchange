@@ -98,13 +98,16 @@ const Calculator = () => {
 
   const fetchPrices = async () => {
     try {
-      const response = await fetch("/api/v3/ticker/price");
+      const response = await fetch("https://apiv2.bitcoinaverage.com/exchanges/ticker/binance");
       if (response.status !== 200) {
         // userContext.setIsError(true);
       }
       let resData = await response.json();
-      resData = resData.filter(item => item.symbol === "BTCUSDT" || item.symbol === "ETHUSDT");
-      console.log(resData);
+      let newResData = [
+        { name: "BTCUSDT", price: resData.symbols.BTCUSDT.last },
+        { name: "ETHUSDT", price: resData.symbols.ETHUSDT.last }
+      ];
+      console.log(newResData);
       setPrice(resData);
     } catch (error) {
       // userContext.setIsError(true);
