@@ -183,6 +183,7 @@ const Calculator = () => {
                 type="number"
                 className="calculator__from-currency-input"
                 placeholder="0.00"
+                autoComplete="off"
                 onChange={showPriceTo}
               />
             </div>
@@ -228,6 +229,7 @@ const Calculator = () => {
                 type="number"
                 className="calculator__to-currency-input"
                 placeholder="0.00"
+                autoComplete="off"
                 onChange={showPriceFrom}
               />
             </div>
