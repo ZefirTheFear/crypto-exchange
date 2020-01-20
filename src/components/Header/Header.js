@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 
 import Context from "../../context";
-import logo from "../../assets/img/logo-big.svg";
+import logo from "../../assets/img/new-big-logo.svg";
 
 import "./Header.scss";
 

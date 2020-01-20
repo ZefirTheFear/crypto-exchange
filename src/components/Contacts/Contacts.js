@@ -5,7 +5,7 @@ import { FaEnvelope } from "react-icons/fa";
 import { FaPhone } from "react-icons/fa";
 import { FaClock } from "react-icons/fa";
 
-import logo from "../../assets/img/logo-big.svg";
+import logo from "../../assets/img/new-big-logo.svg";
 
 import "./Contacts.scss";
 
