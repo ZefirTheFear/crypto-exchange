@@ -4,6 +4,8 @@ import cloneDeep from "clone-deep";
 import { FaAngleDown } from "react-icons/fa";
 import { FaExchangeAlt } from "react-icons/fa";
 
+import Spinner from "../Spinner/Spinner";
+
 import ImgBTC from "../../assets/img/BTC.png";
 import ImgETH from "../../assets/img/ETH.png";
 import ImgUSDT from "../../assets/img/usdt.png";
@@ -47,7 +49,9 @@ const Calculator = () => {
   const percentBuy = 1.7;
   const percentSale = 1.7;
 
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingBinance, setIsLoadingBinance] = useState(true);
+  const [isLoadingUAH, setIsLoadingUAH] = useState(true);
 
   const [isBuyCrypto, setIsBuyCrypto] = useState(true);
   const [isSwapLoading, setIsSwapLoading] = useState(false);
@@ -64,6 +68,12 @@ const Calculator = () => {
     fetchUAHUSD();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!isLoadingBinance && !isLoadingUAH) {
+      setIsLoading(false);
+    }
+  }, [isLoadingBinance, isLoadingUAH]);
 
   useEffect(() => {
     setIsSwapLoading(false);
@@ -89,6 +99,7 @@ const Calculator = () => {
       console.log(cloneFromCurrencies);
 
       setCurrentFromCurrency(cloneFromCurrencies[0]);
+      setIsLoadingBinance(false);
     } catch (error) {
       // userContext.setIsError(true);
     }
@@ -113,6 +124,7 @@ const Calculator = () => {
       console.log(cloneToCurrencies);
 
       setCurrentToCurrency(cloneToCurrencies[0]);
+      setIsLoadingUAH(false);
     } catch (error) {
       // userContext.setIsError(true);
     }
@@ -246,100 +258,104 @@ const Calculator = () => {
   return (
     <section className="calculator-section">
       <div className="calculator-section__inner">
-        <div className="calculator">
-          <div className="calculator__from-currency">
-            <div className="calculator__from-currency-title">вы отдаете</div>
-            <div className="calculator__from-currency-select-wrapper">
-              <div
-                className="calculator__from-currency-select-default"
-                onClick={toggleFromCurrency}
-              >
-                <img
-                  src={currentFromCurrency.img}
-                  alt={currentFromCurrency.name + "-logo"}
-                  className="calculator__from-currency-img"
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          <div className="calculator">
+            <div className="calculator__from-currency">
+              <div className="calculator__from-currency-title">вы отдаете</div>
+              <div className="calculator__from-currency-select-wrapper">
+                <div
+                  className="calculator__from-currency-select-default"
+                  onClick={toggleFromCurrency}
+                >
+                  <img
+                    src={currentFromCurrency.img}
+                    alt={currentFromCurrency.name + "-logo"}
+                    className="calculator__from-currency-img"
+                  />
+                  <span className="calculator__from-currency-name">{currentFromCurrency.name}</span>
+                  <span className="calculator__from-currency-select-arrow">
+                    <FaAngleDown />
+                  </span>
+                </div>
+                <div className="calculator__from-currency-select-options">
+                  {fromCurrencies.map(currency => {
+                    return (
+                      <div
+                        key={currency.name}
+                        className="calculator__from-currency-select-option"
+                        onClick={() => selectFromCurrency(currency)}
+                      >
+                        <img
+                          src={currency.img}
+                          alt={currency.name + "-logo"}
+                          className="calculator__from-currency-img"
+                        />
+                        <span className="calculator__from-currency-name">{currency.name}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="calculator__from-currency-input-wrapper">
+                <input
+                  type="number"
+                  className="calculator__from-currency-input"
+                  placeholder="0.00"
+                  autoComplete="off"
+                  onChange={showToCurrencyAmount}
                 />
-                <span className="calculator__from-currency-name">{currentFromCurrency.name}</span>
-                <span className="calculator__from-currency-select-arrow">
-                  <FaAngleDown />
-                </span>
-              </div>
-              <div className="calculator__from-currency-select-options">
-                {fromCurrencies.map(currency => {
-                  return (
-                    <div
-                      key={currency.name}
-                      className="calculator__from-currency-select-option"
-                      onClick={() => selectFromCurrency(currency)}
-                    >
-                      <img
-                        src={currency.img}
-                        alt={currency.name + "-logo"}
-                        className="calculator__from-currency-img"
-                      />
-                      <span className="calculator__from-currency-name">{currency.name}</span>
-                    </div>
-                  );
-                })}
               </div>
             </div>
-            <div className="calculator__from-currency-input-wrapper">
-              <input
-                type="number"
-                className="calculator__from-currency-input"
-                placeholder="0.00"
-                autoComplete="off"
-                onChange={showToCurrencyAmount}
-              />
+            <div className="calculator__swaper" onClick={swapCurrencies}>
+              <FaExchangeAlt />
             </div>
-          </div>
-          <div className="calculator__swaper" onClick={swapCurrencies}>
-            <FaExchangeAlt />
-          </div>
-          <div className="calculator__to-currency">
-            <div className="calculator__to-currency-title">вы получаете</div>
-            <div className="calculator__to-currency-select-wrapper">
-              <div className="calculator__to-currency-select-default" onClick={toggleToCurrency}>
-                <img
-                  src={currentToCurrency.img}
-                  alt={currentToCurrency.name + "-logo"}
-                  className="calculator__to-currency-img"
+            <div className="calculator__to-currency">
+              <div className="calculator__to-currency-title">вы получаете</div>
+              <div className="calculator__to-currency-select-wrapper">
+                <div className="calculator__to-currency-select-default" onClick={toggleToCurrency}>
+                  <img
+                    src={currentToCurrency.img}
+                    alt={currentToCurrency.name + "-logo"}
+                    className="calculator__to-currency-img"
+                  />
+                  <span className="calculator__to-currency-name">{currentToCurrency.name}</span>
+                  <span className="calculator__to-currency-select-arrow">
+                    <FaAngleDown />
+                  </span>
+                </div>
+                <div className="calculator__to-currency-select-options">
+                  {toCurrencies.map(currency => {
+                    return (
+                      <div
+                        key={currency.name}
+                        className="calculator__to-currency-select-option"
+                        onClick={() => selectToCurrency(currency)}
+                      >
+                        <img
+                          src={currency.img}
+                          alt={currency.name + "-logo"}
+                          className="calculator__to-currency-img"
+                        />
+                        <span className="calculator__to-currency-name">{currency.name}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="calculator__to-currency-input-wrapper">
+                <input
+                  type="number"
+                  className="calculator__to-currency-input"
+                  placeholder="0.00"
+                  autoComplete="off"
+                  onChange={showFromCurrencyAmount}
                 />
-                <span className="calculator__to-currency-name">{currentToCurrency.name}</span>
-                <span className="calculator__to-currency-select-arrow">
-                  <FaAngleDown />
-                </span>
               </div>
-              <div className="calculator__to-currency-select-options">
-                {toCurrencies.map(currency => {
-                  return (
-                    <div
-                      key={currency.name}
-                      className="calculator__to-currency-select-option"
-                      onClick={() => selectToCurrency(currency)}
-                    >
-                      <img
-                        src={currency.img}
-                        alt={currency.name + "-logo"}
-                        className="calculator__to-currency-img"
-                      />
-                      <span className="calculator__to-currency-name">{currency.name}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="calculator__to-currency-input-wrapper">
-              <input
-                type="number"
-                className="calculator__to-currency-input"
-                placeholder="0.00"
-                autoComplete="off"
-                onChange={showFromCurrencyAmount}
-              />
             </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
