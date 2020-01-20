@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "ccex-api": "0.0.17",
+    "clone-deep": "^4.0.1",
     "coin-ticker": "^3.2.0",
     "cra-template": "1.0.0",
     "node-sass": "^4.13.1",

@@ -38,10 +38,12 @@
 .calculator__from-currency-select-wrapper_opened,
 .calculator__to-currency-select-wrapper_opened {
   .calculator__from-currency-select-options {
-    height: 152px;
+    // height: 152px;
+    height: auto;
   }
   .calculator__to-currency-select-options {
-    height: 102px;
+    // height: 102px;
+    height: auto;
   }
   .calculator__from-currency-select-arrow,
   .calculator__to-currency-select-arrow {

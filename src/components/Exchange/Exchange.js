@@ -41,7 +41,7 @@ const Exchange = () => {
           >
             контактов
           </span>{" "}
-          или оставьте свои данные и мы вам перезвоним
+          или оставьте свои и мы вам перезвоним
         </div>
         <form className="exchange__form" onSubmit={sendData}>
           <div>
@@ -56,7 +56,7 @@ const Exchange = () => {
             <input
               type="tel"
               className="exchange__input"
-              placeholder="050 555 55 55"
+              placeholder="телефон"
               autoComplete="off"
               value={number}
               onChange={numberOnChange}
@@ -66,6 +66,10 @@ const Exchange = () => {
             перезвоните мне
           </button>
         </form>
+        <p className="exchange__error">
+          (если мы вам не перезваниваем, то, вероятно, вы ошиблись при указании номера. попробуйте
+          еще раз)
+        </p>
       </div>
     </section>
   );

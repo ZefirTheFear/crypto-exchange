@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 
+import cloneDeep from "clone-deep";
 import { FaAngleDown } from "react-icons/fa";
 import { FaExchangeAlt } from "react-icons/fa";
 
@@ -15,31 +16,44 @@ const Calculator = () => {
   const dataFromCurrency = [
     {
       name: "BTC",
-      img: ImgBTC
+      img: ImgBTC,
+      price: null
     },
     {
       name: "ETH",
-      img: ImgETH
+      img: ImgETH,
+      price: null
     },
     {
       name: "USDT",
-      img: ImgUSDT
+      img: ImgUSDT,
+      price: 1
     }
   ];
 
   const dataToCurrency = [
     {
       name: "USD",
-      img: ImgUSD
+      img: ImgUSD,
+      price: 1
     },
     {
       name: "UAH",
-      img: ImgUAH
+      img: ImgUAH,
+      price: null
     }
   ];
 
-  const [price, setPrice] = useState([]);
+  const percentBuy = 1.7;
+  const percentSale = 1.7;
 
+  // const [isLoading, setIsLoading] = useState(true);
+
+  const [isBuyCrypto, setIsBuyCrypto] = useState(true);
+  const [isSwapLoading, setIsSwapLoading] = useState(false);
+
+  const [fromCurrencies, setFromCurrencies] = useState(dataFromCurrency);
+  const [toCurrencies, setToCurrencies] = useState(dataToCurrency);
   const [currentFromCurrency, setCurrentFromCurrency] = useState(dataFromCurrency[0]);
   const [isFromCurrencyOpen, setIsFromCurrencyOpen] = useState(false);
   const [currentToCurrency, setCurrentToCurrency] = useState(dataToCurrency[0]);
@@ -48,7 +62,91 @@ const Calculator = () => {
   useEffect(() => {
     fetchPrices();
     fetchUAHUSD();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setIsSwapLoading(false);
+  }, [isBuyCrypto]);
+
+  const fetchPrices = async () => {
+    try {
+      const response = await fetch("https://apiv2.bitcoinaverage.com/exchanges/ticker/binance");
+      if (response.status !== 200) {
+        // userContext.setIsError(true);
+      }
+      let resData = await response.json();
+      let cloneFromCurrencies = cloneDeep(fromCurrencies);
+      cloneFromCurrencies.forEach(item => {
+        if (item.name === "BTC") {
+          item.price = resData.symbols.BTCUSDT.last;
+        }
+        if (item.name === "ETH") {
+          item.price = resData.symbols.ETHUSDT.last;
+        }
+      });
+      setFromCurrencies(cloneFromCurrencies);
+      console.log(cloneFromCurrencies);
+
+      setCurrentFromCurrency(cloneFromCurrencies[0]);
+    } catch (error) {
+      // userContext.setIsError(true);
+    }
+  };
+
+  const fetchUAHUSD = async () => {
+    try {
+      const response = await fetch(
+        `https://exchange-currency-obolon.firebaseio.com/currencies.json`
+      );
+      if (response.status !== 200) {
+        // userContext.setIsError(true);
+      }
+      let resData = await response.json();
+      let cloneToCurrencies = cloneDeep(toCurrencies);
+      cloneToCurrencies.forEach(item => {
+        if (item.name === "UAH") {
+          item.price = 1 / resData.usd.buy;
+        }
+      });
+      setToCurrencies(cloneToCurrencies);
+      console.log(cloneToCurrencies);
+
+      setCurrentToCurrency(cloneToCurrencies[0]);
+    } catch (error) {
+      // userContext.setIsError(true);
+    }
+  };
+
+  const showToCurrencyAmount = e => {
+    if (e.target.value === "") {
+      return (document.querySelector(".calculator__to-currency-input").value = "");
+    }
+    document.querySelector(".calculator__to-currency-input").value = (
+      (e.target.value *
+        (isBuyCrypto
+          ? currentFromCurrency.price * ((100 - percentBuy) / 100)
+          : currentFromCurrency.price)) /
+      (isBuyCrypto
+        ? currentToCurrency.price
+        : currentToCurrency.price * ((100 + percentSale) / 100))
+    ).toFixed(4);
+  };
+
+  const showFromCurrencyAmount = e => {
+    if (e.target.value === "") {
+      return (document.querySelector(".calculator__from-currency-input").value = "");
+    }
+    document.querySelector(".calculator__from-currency-input").value = (
+      (e.target.value *
+        (isBuyCrypto
+          ? currentToCurrency.price
+          : currentToCurrency.price * ((100 + percentSale) / 100))) /
+      (isBuyCrypto
+        ? currentFromCurrency.price * ((100 - percentBuy) / 100)
+        : currentFromCurrency.price)
+    ).toFixed(4);
+  };
 
   const toggleFromCurrency = () => {
     isFromCurrencyOpen ? closeFromCurrency() : openFromCurrency();
@@ -69,6 +167,15 @@ const Calculator = () => {
   };
 
   const selectFromCurrency = currency => {
+    if (document.querySelector(".calculator__from-currency-input").value !== "") {
+      document.querySelector(".calculator__to-currency-input").value = (
+        (document.querySelector(".calculator__from-currency-input").value *
+          (isBuyCrypto ? currency.price * ((100 - percentBuy) / 100) : currency.price)) /
+        (isBuyCrypto
+          ? currentToCurrency.price
+          : currentToCurrency.price * ((100 + percentSale) / 100))
+      ).toFixed(4);
+    }
     setCurrentFromCurrency(currency);
     closeFromCurrency();
   };
@@ -92,50 +199,48 @@ const Calculator = () => {
   };
 
   const selectToCurrency = currency => {
+    if (document.querySelector(".calculator__to-currency-input").value !== "") {
+      document.querySelector(".calculator__from-currency-input").value = (
+        (document.querySelector(".calculator__to-currency-input").value *
+          (isBuyCrypto ? currency.price : currency.price * ((100 + percentSale) / 100))) /
+        (isBuyCrypto
+          ? currentFromCurrency.price * ((100 - percentBuy) / 100)
+          : currentFromCurrency.price)
+      ).toFixed(4);
+    }
     setCurrentToCurrency(currency);
     closeToCurrency();
   };
 
-  const fetchPrices = async () => {
-    try {
-      const response = await fetch("https://apiv2.bitcoinaverage.com/exchanges/ticker/binance");
-      if (response.status !== 200) {
-        // userContext.setIsError(true);
-      }
-      let resData = await response.json();
-      let newResData = [
-        { name: "BTCUSDT", price: resData.symbols.BTCUSDT.last },
-        { name: "ETHUSDT", price: resData.symbols.ETHUSDT.last }
-      ];
-      console.log(newResData);
-      setPrice(resData);
-    } catch (error) {
-      // userContext.setIsError(true);
+  const swapCurrencies = () => {
+    if (isSwapLoading) {
+      return;
     }
-  };
+    setIsSwapLoading(true);
 
-  const fetchUAHUSD = async () => {
-    try {
-      const response = await fetch(
-        `https://exchange-currency-obolon.firebaseio.com/currencies.json`
-      );
-      if (response.status !== 200) {
-        // userContext.setIsError(true);
-      }
-      let resData = await response.json();
-      // resData = resData.filter(item => item.symbol === "BTCUSDT" || item.symbol === "ETHUSDT");
-      console.log(resData);
-      // setPrice(resData);
-    } catch (error) {
-      // userContext.setIsError(true);
+    if (document.querySelector(".calculator__from-currency-input").value !== "") {
+      document.querySelector(".calculator__to-currency-input").value = document.querySelector(
+        ".calculator__from-currency-input"
+      ).value;
+      document.querySelector(".calculator__from-currency-input").value = (
+        (document.querySelector(".calculator__from-currency-input").value *
+          (isBuyCrypto
+            ? currentFromCurrency.price * ((100 + percentSale) / 100)
+            : currentFromCurrency.price)) /
+        (isBuyCrypto
+          ? currentToCurrency.price
+          : currentToCurrency.price * ((100 - percentBuy) / 100))
+      ).toFixed(4);
     }
-  };
 
-  const showPriceTo = e => {
-    console.log(e.target.value);
-  };
-  const showPriceFrom = e => {
-    console.log(e.target.value);
+    const cloneFromCurrencies = cloneDeep(fromCurrencies);
+    const cloneToCurrencies = cloneDeep(toCurrencies);
+    setFromCurrencies(cloneToCurrencies);
+    setCurrentFromCurrency(cloneToCurrencies[0]);
+    setToCurrencies(cloneFromCurrencies);
+    setCurrentToCurrency(cloneFromCurrencies[0]);
+
+    setIsBuyCrypto(!isBuyCrypto);
   };
 
   return (
@@ -160,7 +265,7 @@ const Calculator = () => {
                 </span>
               </div>
               <div className="calculator__from-currency-select-options">
-                {dataFromCurrency.map(currency => {
+                {fromCurrencies.map(currency => {
                   return (
                     <div
                       key={currency.name}
@@ -184,11 +289,11 @@ const Calculator = () => {
                 className="calculator__from-currency-input"
                 placeholder="0.00"
                 autoComplete="off"
-                onChange={showPriceTo}
+                onChange={showToCurrencyAmount}
               />
             </div>
           </div>
-          <div className="calculator__swaper">
+          <div className="calculator__swaper" onClick={swapCurrencies}>
             <FaExchangeAlt />
           </div>
           <div className="calculator__to-currency">
@@ -206,7 +311,7 @@ const Calculator = () => {
                 </span>
               </div>
               <div className="calculator__to-currency-select-options">
-                {dataToCurrency.map(currency => {
+                {toCurrencies.map(currency => {
                   return (
                     <div
                       key={currency.name}
@@ -230,7 +335,7 @@ const Calculator = () => {
                 className="calculator__to-currency-input"
                 placeholder="0.00"
                 autoComplete="off"
-                onChange={showPriceFrom}
+                onChange={showFromCurrencyAmount}
               />
             </div>
           </div>
