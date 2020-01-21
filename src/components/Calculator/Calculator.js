@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import cloneDeep from "clone-deep";
 import { FaAngleDown } from "react-icons/fa";
 import { FaExchangeAlt } from "react-icons/fa";
 
 import Spinner from "../Spinner/Spinner";
+import Context from "../../context";
 
 import ImgBTC from "../../assets/img/BTC.png";
 import ImgETH from "../../assets/img/ETH.png";
@@ -15,6 +16,8 @@ import ImgUAH from "../../assets/img/uah.png";
 import "./Calculator.scss";
 
 const Calculator = () => {
+  const context = useContext(Context);
+
   const dataFromCurrency = [
     {
       name: "BTC",
@@ -82,8 +85,10 @@ const Calculator = () => {
   const fetchPrices = async () => {
     try {
       const response = await fetch("https://apiv2.bitcoinaverage.com/exchanges/ticker/binance");
+      // const response = await fetch(" https://dex.binance.org/api/v1/ticker/24hr");
+      // const response = await fetch("https://coinograph.io/ticker/?symbol=binance:btcusdt");
       if (response.status !== 200) {
-        // userContext.setIsError(true);
+        return context.setIsError(true);
       }
       let resData = await response.json();
       let cloneFromCurrencies = cloneDeep(fromCurrencies);
@@ -101,7 +106,7 @@ const Calculator = () => {
       setCurrentFromCurrency(cloneFromCurrencies[0]);
       setIsLoadingBinance(false);
     } catch (error) {
-      // userContext.setIsError(true);
+      context.setIsError(true);
     }
   };
 
@@ -111,7 +116,7 @@ const Calculator = () => {
         `https://exchange-currency-obolon.firebaseio.com/currencies.json`
       );
       if (response.status !== 200) {
-        // userContext.setIsError(true);
+        return context.setIsError(true);
       }
       let resData = await response.json();
       let cloneToCurrencies = cloneDeep(toCurrencies);
@@ -126,7 +131,7 @@ const Calculator = () => {
       setCurrentToCurrency(cloneToCurrencies[0]);
       setIsLoadingUAH(false);
     } catch (error) {
-      // userContext.setIsError(true);
+      context.setIsError(true);
     }
   };
 

@@ -10,9 +10,11 @@ import Exchange from "./components/Exchange/Exchange";
 import AboutUs from "./components/AboutUs/AboutUs";
 import Contacts from "./components/Contacts/Contacts";
 import MenuMobile from "./components/MenuMobile/MenuMobile";
+import Modal from "./components/Modal/Modal";
 
 function App() {
   const [isShownMenu, setIsShownMenu] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const scrollTo = node => {
     const headerOffset = 60;
@@ -28,8 +30,15 @@ function App() {
     setIsShownMenu(false);
   };
 
+  const closeModal = () => {
+    setIsError(false);
+  };
+
   return (
-    <Context.Provider value={{ scrollTo, isShownMenu, setIsShownMenu, closeMenu }}>
+    <Context.Provider value={{ scrollTo, isShownMenu, setIsShownMenu, closeMenu, setIsError }}>
+      {isError ? (
+        <Modal closeModal={closeModal} text="что-то пошло не так. попробуйте еще раз" />
+      ) : null}
       <Header />
       <MenuMobile />
       <Hero />

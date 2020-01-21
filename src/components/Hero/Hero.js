@@ -1,7 +1,7 @@
 import React from "react";
 
-import logo from "../../assets/img/logo_cop.svg";
-import logoWords from "../../assets/img/new-words-logo.svg";
+import logo from "../../assets/img/logo_img.svg";
+import logoWords from "../../assets/img/logo_words.svg";
 import "./Hero.scss";
 
 const Hero = () => {

@@ -1,11 +1,11 @@
 import React from "react";
 
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { FaEnvelope } from "react-icons/fa";
+import { FaTelegramPlane } from "react-icons/fa";
 import { FaPhone } from "react-icons/fa";
 import { FaClock } from "react-icons/fa";
 
-import logo from "../../assets/img/new-big-logo.svg";
+import logo from "../../assets/img/logo_full.svg";
 
 import "./Contacts.scss";
 
@@ -17,21 +17,27 @@ const Contacts = () => {
       desc: "Киев, Оболонский пр, 14Б"
     },
     {
-      title: "mail",
-      icon: <FaEnvelope />,
-      desc: "mail@gmail.com"
+      title: "telegram",
+      icon: <FaTelegramPlane />,
+      desc: "t.me/cryptotradekyiv"
     },
     {
       title: "phone",
       icon: <FaPhone />,
-      desc: "(055) 555-55-55"
+      desc: "(093) 146-74-75"
     },
     {
       title: "schedule",
       icon: <FaClock />,
-      desc: "Пн-Пт: 09-19, Сб-ВС: 10-18"
+      desc: "Пн-Пт: 09-21, Сб-ВС: 10-20"
     }
   ];
+
+  // const clickUnit = title => {
+  //   if (title === "telegram") {
+  //     window.open("https://t.me/cryptotradekyiv");
+  //   }
+  // };
 
   return (
     <section className="contacts">
@@ -41,7 +47,11 @@ const Contacts = () => {
           <div>
             {data.map(item => {
               return (
-                <div className="contacts__info-unit" key={item.title}>
+                <div
+                  className="contacts__info-unit"
+                  key={item.title}
+                  // onClick={() => clickUnit(item.title)}
+                >
                   <span className="contacts__info-unit-icon">{item.icon}</span>
                   <span key={item.title}>{item.desc}</span>
                 </div>

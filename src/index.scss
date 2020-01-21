@@ -9,6 +9,10 @@
   box-sizing: border-box;
 }
 
+input {
+  user-select: auto;
+}
+
 body {
   font-family: "Open Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
