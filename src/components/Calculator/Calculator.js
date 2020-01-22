@@ -49,9 +49,6 @@ const Calculator = () => {
     }
   ];
 
-  const percentBuy = 1.7;
-  const percentSale = 1.7;
-
   const [lastModified, setLastModified] = useState();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -136,27 +133,74 @@ const Calculator = () => {
     }
   };
 
+  const valueWithPercentage = (valueInUSD, value) => {
+    if (valueInUSD < 1000) {
+      return value * ((100 + 2) / 100);
+    } else if (valueInUSD >= 1000 && valueInUSD < 5000) {
+      return value * ((100 + 1.7) / 100);
+    } else if (valueInUSD >= 5000 && valueInUSD < 10000) {
+      return value * ((100 + 1.5) / 100);
+    } else if (valueInUSD >= 10000 && valueInUSD < 20000) {
+      return value * ((100 + 1.2) / 100);
+    } else if (valueInUSD >= 20000 && valueInUSD < 50000) {
+      return value * ((100 + 1) / 100);
+    } else if (valueInUSD >= 50000) {
+      return value * ((100 + 0.8) / 100);
+    }
+  };
+
+  const valueWithoutPercentage = (valueInUSD, value) => {
+    if (valueInUSD < 1000) {
+      return value * ((100 - 2) / 100);
+    } else if (valueInUSD >= 1000 && valueInUSD < 5000) {
+      return value * ((100 - 1.7) / 100);
+    } else if (valueInUSD >= 5000 && valueInUSD < 10000) {
+      return value * ((100 - 1.5) / 100);
+    } else if (valueInUSD >= 10000 && valueInUSD < 20000) {
+      return value * ((100 - 1.2) / 100);
+    } else if (valueInUSD >= 20000 && valueInUSD < 50000) {
+      return value * ((100 - 1) / 100);
+    } else if (valueInUSD >= 50000) {
+      return value * ((100 - 0.8) / 100);
+    }
+  };
+
   const changeFromCurrencyAmount = e => {
     setLastModified("from");
     if (e.target.value === "") {
       return (document.querySelector(".calculator__to-currency-input").value = "");
     }
-    const value =
-      (e.target.value *
-        (isBuyCrypto
-          ? currentFromCurrency.price * ((100 - percentBuy) / 100)
-          : currentFromCurrency.price)) /
-      (isBuyCrypto
-        ? currentToCurrency.price
-        : currentToCurrency.price * ((100 + percentSale) / 100));
-    if (
-      currentToCurrency.name === "BTC" ||
-      currentToCurrency.name === "ETH" ||
-      currentToCurrency.name === "USDT"
-    ) {
-      document.querySelector(".calculator__to-currency-input").value = value.toFixed(4);
+    if (e.target.value < 0) {
+      document.querySelector(".calculator__from-currency-input").value = e.target.value * -1;
+    }
+    if (currentFromCurrency.name === "BTC" && e.target.value > 9999) {
+      document.querySelector(".calculator__from-currency-input").value = 9999;
+    }
+    if (currentFromCurrency.name === "ETH" && e.target.value > 99999) {
+      document.querySelector(".calculator__from-currency-input").value = 99999;
+    }
+    if (currentFromCurrency.name === "USDT" && e.target.value > 9999999) {
+      document.querySelector(".calculator__from-currency-input").value = 9999999;
+    }
+    if (currentFromCurrency.name === "USD" && e.target.value > 9999999) {
+      document.querySelector(".calculator__from-currency-input").value = 9999999;
+    }
+    if (currentFromCurrency.name === "UAH" && e.target.value > 9999999) {
+      document.querySelector(".calculator__from-currency-input").value = 9999999;
+    }
+
+    const valueInUSD = e.target.value * currentFromCurrency.price;
+    const value = (e.target.value * currentFromCurrency.price) / currentToCurrency.price;
+    if (isBuyCrypto) {
+      document.querySelector(".calculator__to-currency-input").value = valueWithoutPercentage(
+        valueInUSD,
+        value
+      ).toFixed(2);
     } else {
-      document.querySelector(".calculator__to-currency-input").value = value.toFixed(2);
+      document.querySelector(".calculator__to-currency-input").value = valueWithPercentage(
+        valueInUSD,
+        value
+      ).toFixed(4);
     }
   };
 
@@ -165,23 +209,37 @@ const Calculator = () => {
     if (e.target.value === "") {
       return (document.querySelector(".calculator__from-currency-input").value = "");
     }
-    const value =
-      (e.target.value *
-        (isBuyCrypto
-          ? currentToCurrency.price
-          : currentToCurrency.price * ((100 + percentSale) / 100))) /
-      (isBuyCrypto
-        ? currentFromCurrency.price * ((100 - percentBuy) / 100)
-        : currentFromCurrency.price);
+    if (e.target.value < 0) {
+      document.querySelector(".calculator__to-currency-input").value = e.target.value * -1;
+    }
+    if (currentFromCurrency.name === "BTC" && e.target.value > 9999) {
+      document.querySelector(".calculator__from-currency-input").value = 9999;
+    }
+    if (currentFromCurrency.name === "ETH" && e.target.value > 99999) {
+      document.querySelector(".calculator__from-currency-input").value = 99999;
+    }
+    if (currentFromCurrency.name === "USDT" && e.target.value > 9999999) {
+      document.querySelector(".calculator__from-currency-input").value = 9999999;
+    }
+    if (currentFromCurrency.name === "USD" && e.target.value > 9999999) {
+      document.querySelector(".calculator__from-currency-input").value = 9999999;
+    }
+    if (currentFromCurrency.name === "UAH" && e.target.value > 9999999) {
+      document.querySelector(".calculator__from-currency-input").value = 9999999;
+    }
 
-    if (
-      currentFromCurrency.name === "BTC" ||
-      currentFromCurrency.name === "ETH" ||
-      currentFromCurrency.name === "USDT"
-    ) {
-      document.querySelector(".calculator__from-currency-input").value = value.toFixed(4);
+    const valueInUSD = e.target.value * currentToCurrency.price;
+    const value = (e.target.value * currentToCurrency.price) / currentFromCurrency.price;
+    if (isBuyCrypto) {
+      document.querySelector(".calculator__from-currency-input").value = valueWithoutPercentage(
+        valueInUSD,
+        value
+      ).toFixed(4);
     } else {
-      document.querySelector(".calculator__from-currency-input").value = value.toFixed(2);
+      document.querySelector(".calculator__from-currency-input").value = valueWithPercentage(
+        valueInUSD,
+        value
+      ).toFixed(2);
     }
   };
 
@@ -206,32 +264,41 @@ const Calculator = () => {
   const selectFromCurrency = currency => {
     if (document.querySelector(".calculator__from-currency-input").value !== "") {
       if (lastModified === "from") {
+        const valueInUSD =
+          document.querySelector(".calculator__from-currency-input").value * currency.price;
         const value =
-          (document.querySelector(".calculator__from-currency-input").value *
-            (isBuyCrypto ? currency.price * ((100 - percentBuy) / 100) : currency.price)) /
-          (isBuyCrypto
-            ? currentToCurrency.price
-            : currentToCurrency.price * ((100 + percentSale) / 100));
-        if (
-          currentToCurrency.name === "BTC" ||
-          currentToCurrency.name === "ETH" ||
-          currentToCurrency.name === "USDT"
-        ) {
-          document.querySelector(".calculator__to-currency-input").value = value.toFixed(4);
+          (document.querySelector(".calculator__from-currency-input").value * currency.price) /
+          currentToCurrency.price;
+
+        if (isBuyCrypto) {
+          document.querySelector(".calculator__to-currency-input").value = valueWithoutPercentage(
+            valueInUSD,
+            value
+          ).toFixed(2);
         } else {
-          document.querySelector(".calculator__to-currency-input").value = value.toFixed(2);
+          document.querySelector(".calculator__to-currency-input").value = valueWithPercentage(
+            valueInUSD,
+            value
+          ).toFixed(4);
         }
       } else {
+        const valueInUSD =
+          document.querySelector(".calculator__to-currency-input").value * currentToCurrency.price;
         const value =
           (document.querySelector(".calculator__to-currency-input").value *
-            (isBuyCrypto
-              ? currentToCurrency.price
-              : currentToCurrency.price * ((100 + percentSale) / 100))) /
-          (isBuyCrypto ? currency.price * ((100 - percentBuy) / 100) : currency.price);
-        if (currency.name === "BTC" || currency.name === "ETH" || currency.name === "USDT") {
-          document.querySelector(".calculator__from-currency-input").value = value.toFixed(4);
+            currentToCurrency.price) /
+          currency.price;
+
+        if (isBuyCrypto) {
+          document.querySelector(".calculator__from-currency-input").value = valueWithoutPercentage(
+            valueInUSD,
+            value
+          ).toFixed(4);
         } else {
-          document.querySelector(".calculator__from-currency-input").value = value.toFixed(2);
+          document.querySelector(".calculator__from-currency-input").value = valueWithPercentage(
+            valueInUSD,
+            value
+          ).toFixed(2);
         }
       }
     }
@@ -260,33 +327,42 @@ const Calculator = () => {
   const selectToCurrency = currency => {
     if (document.querySelector(".calculator__to-currency-input").value !== "") {
       if (lastModified === "to") {
+        const valueInUSD =
+          document.querySelector(".calculator__to-currency-input").value * currency.price;
         const value =
-          (document.querySelector(".calculator__to-currency-input").value *
-            (isBuyCrypto ? currency.price : currency.price * ((100 + percentSale) / 100))) /
-          (isBuyCrypto
-            ? currentFromCurrency.price * ((100 - percentBuy) / 100)
-            : currentFromCurrency.price);
-        if (
-          currentFromCurrency.name === "BTC" ||
-          currentFromCurrency.name === "ETH" ||
-          currentFromCurrency.name === "USDT"
-        ) {
-          document.querySelector(".calculator__from-currency-input").value = value.toFixed(4);
+          (document.querySelector(".calculator__to-currency-input").value * currency.price) /
+          currentFromCurrency.price;
+
+        if (isBuyCrypto) {
+          document.querySelector(".calculator__from-currency-input").value = valueWithoutPercentage(
+            valueInUSD,
+            value
+          ).toFixed(4);
         } else {
-          document.querySelector(".calculator__from-currency-input").value = value.toFixed(2);
+          document.querySelector(".calculator__from-currency-input").value = valueWithPercentage(
+            valueInUSD,
+            value
+          ).toFixed(2);
         }
       } else {
+        const valueInUSD =
+          document.querySelector(".calculator__from-currency-input").value *
+          currentFromCurrency.price;
         const value =
           (document.querySelector(".calculator__from-currency-input").value *
-            (isBuyCrypto
-              ? currentFromCurrency.price * ((100 - percentBuy) / 100)
-              : currentFromCurrency.price)) /
-          (isBuyCrypto ? currency.price : currency.price * ((100 + percentSale) / 100));
+            currentFromCurrency.price) /
+          currency.price;
 
-        if (currency.name === "BTC" || currency.name === "ETH" || currency.name === "USDT") {
-          document.querySelector(".calculator__to-currency-input").value = value.toFixed(4);
+        if (isBuyCrypto) {
+          document.querySelector(".calculator__to-currency-input").value = valueWithoutPercentage(
+            valueInUSD,
+            value
+          ).toFixed(2);
         } else {
-          document.querySelector(".calculator__to-currency-input").value = value.toFixed(2);
+          document.querySelector(".calculator__to-currency-input").value = valueWithPercentage(
+            valueInUSD,
+            value
+          ).toFixed(4);
         }
       }
     }
@@ -304,44 +380,45 @@ const Calculator = () => {
         document.querySelector(".calculator__to-currency-input").value = document.querySelector(
           ".calculator__from-currency-input"
         ).value;
+        const valueInUSD =
+          document.querySelector(".calculator__from-currency-input").value *
+          currentFromCurrency.price;
         const value =
           (document.querySelector(".calculator__from-currency-input").value *
-            (isBuyCrypto
-              ? currentFromCurrency.price * ((100 + percentSale) / 100)
-              : currentFromCurrency.price)) /
-          (isBuyCrypto
-            ? currentToCurrency.price
-            : currentToCurrency.price * ((100 - percentBuy) / 100));
-        if (
-          currentToCurrency.name === "BTC" ||
-          currentToCurrency.name === "ETH" ||
-          currentToCurrency.name === "USDT"
-        ) {
-          document.querySelector(".calculator__from-currency-input").value = value.toFixed(4);
+            currentFromCurrency.price) /
+          currentToCurrency.price;
+        if (isBuyCrypto) {
+          document.querySelector(".calculator__from-currency-input").value = valueWithPercentage(
+            valueInUSD,
+            value
+          ).toFixed(2);
         } else {
-          document.querySelector(".calculator__from-currency-input").value = value.toFixed(2);
+          document.querySelector(".calculator__from-currency-input").value = valueWithoutPercentage(
+            valueInUSD,
+            value
+          ).toFixed(4);
         }
         setLastModified("to");
       } else {
         document.querySelector(".calculator__from-currency-input").value = document.querySelector(
           ".calculator__to-currency-input"
         ).value;
+        const valueInUSD =
+          document.querySelector(".calculator__to-currency-input").value * currentToCurrency.price;
         const value =
           (document.querySelector(".calculator__to-currency-input").value *
-            (isBuyCrypto
-              ? currentToCurrency.price
-              : currentToCurrency.price * ((100 - percentBuy) / 100))) /
-          (isBuyCrypto
-            ? currentFromCurrency.price * ((100 + percentSale) / 100)
-            : currentFromCurrency.price);
-        if (
-          currentFromCurrency.name === "BTC" ||
-          currentFromCurrency.name === "ETH" ||
-          currentFromCurrency.name === "USDT"
-        ) {
-          document.querySelector(".calculator__to-currency-input").value = value.toFixed(4);
+            currentToCurrency.price) /
+          currentFromCurrency.price;
+        if (isBuyCrypto) {
+          document.querySelector(".calculator__to-currency-input").value = valueWithPercentage(
+            valueInUSD,
+            value
+          ).toFixed(4);
         } else {
-          document.querySelector(".calculator__to-currency-input").value = value.toFixed(2);
+          document.querySelector(".calculator__to-currency-input").value = valueWithoutPercentage(
+            valueInUSD,
+            value
+          ).toFixed(2);
         }
         setLastModified("from");
       }
