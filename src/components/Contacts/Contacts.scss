@@ -40,6 +40,14 @@
   }
 }
 
+.contacts__info-unit_telegram {
+  cursor: pointer;
+
+  &:hover {
+    color: lighten($contacts-color, 20);
+  }
+}
+
 .contacts__info-unit-icon {
   margin: 3px 20px 0 0;
 

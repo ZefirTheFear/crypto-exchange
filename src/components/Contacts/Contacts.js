@@ -17,14 +17,14 @@ const Contacts = () => {
       desc: "Киев, Оболонский пр, 14Б"
     },
     {
-      title: "telegram",
-      icon: <FaTelegramPlane />,
-      desc: "t.me/cryptotradekyiv"
-    },
-    {
       title: "phone",
       icon: <FaPhone />,
       desc: "(093) 146-74-75"
+    },
+    {
+      title: "telegram",
+      icon: <FaTelegramPlane />,
+      desc: "t.me/cryptotradekyiv"
     },
     {
       title: "schedule",
@@ -33,11 +33,9 @@ const Contacts = () => {
     }
   ];
 
-  // const clickUnit = title => {
-  //   if (title === "telegram") {
-  //     window.open("https://t.me/cryptotradekyiv");
-  //   }
-  // };
+  const clickUnit = () => {
+    window.open("https://t.me/cryptotradekyiv");
+  };
 
   return (
     <section className="contacts">
@@ -46,12 +44,20 @@ const Contacts = () => {
           <img src={logo} alt="logo" className="contacts__logo" />
           <div>
             {data.map(item => {
+              if (item.title === "telegram") {
+                return (
+                  <div
+                    className="contacts__info-unit contacts__info-unit_telegram"
+                    key={item.title}
+                    onClick={clickUnit}
+                  >
+                    <span className="contacts__info-unit-icon">{item.icon}</span>
+                    <span key={item.title}>{item.desc}</span>
+                  </div>
+                );
+              }
               return (
-                <div
-                  className="contacts__info-unit"
-                  key={item.title}
-                  // onClick={() => clickUnit(item.title)}
-                >
+                <div className="contacts__info-unit" key={item.title}>
                   <span className="contacts__info-unit-icon">{item.icon}</span>
                   <span key={item.title}>{item.desc}</span>
                 </div>

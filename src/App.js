@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 
+import smoothscroll from "smoothscroll-polyfill";
+
 import Header from "./components/Header/Header";
 import Context from "./context";
 
-import "./App.scss";
 import Hero from "./components/Hero/Hero";
 import Calculator from "./components/Calculator/Calculator";
 import Exchange from "./components/Exchange/Exchange";
@@ -11,6 +12,10 @@ import AboutUs from "./components/AboutUs/AboutUs";
 import Contacts from "./components/Contacts/Contacts";
 import MenuMobile from "./components/MenuMobile/MenuMobile";
 import Modal from "./components/Modal/Modal";
+
+import "./App.scss";
+
+smoothscroll.polyfill();
 
 function App() {
   const [isShownMenu, setIsShownMenu] = useState(false);
@@ -32,6 +37,10 @@ function App() {
 
   const closeModal = () => {
     setIsError(false);
+  };
+
+  window.onresize = () => {
+    closeMenu();
   };
 
   return (
