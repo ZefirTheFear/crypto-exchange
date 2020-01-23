@@ -190,16 +190,15 @@ const Calculator = () => {
     }
 
     const valueInUSD = e.target.value * currentFromCurrency.price;
-    const value = (e.target.value * currentFromCurrency.price) / currentToCurrency.price;
     if (isBuyCrypto) {
-      document.querySelector(".calculator__to-currency-input").value = valueWithoutPercentage(
-        valueInUSD,
-        value
+      document.querySelector(".calculator__to-currency-input").value = (
+        (e.target.value * valueWithoutPercentage(valueInUSD, currentFromCurrency.price)) /
+        currentToCurrency.price
       ).toFixed(2);
     } else {
-      document.querySelector(".calculator__to-currency-input").value = valueWithPercentage(
-        valueInUSD,
-        value
+      document.querySelector(".calculator__to-currency-input").value = (
+        (e.target.value * currentFromCurrency.price) /
+        valueWithPercentage(valueInUSD, currentToCurrency.price)
       ).toFixed(4);
     }
   };
@@ -229,16 +228,15 @@ const Calculator = () => {
     }
 
     const valueInUSD = e.target.value * currentToCurrency.price;
-    const value = (e.target.value * currentToCurrency.price) / currentFromCurrency.price;
     if (isBuyCrypto) {
-      document.querySelector(".calculator__from-currency-input").value = valueWithoutPercentage(
-        valueInUSD,
-        value
+      document.querySelector(".calculator__from-currency-input").value = (
+        (e.target.value * currentToCurrency.price) /
+        valueWithoutPercentage(valueInUSD, currentFromCurrency.price)
       ).toFixed(4);
     } else {
-      document.querySelector(".calculator__from-currency-input").value = valueWithPercentage(
-        valueInUSD,
-        value
+      document.querySelector(".calculator__from-currency-input").value = (
+        (e.target.value * valueWithPercentage(valueInUSD, currentToCurrency.price)) /
+        currentFromCurrency.price
       ).toFixed(2);
     }
   };
@@ -266,38 +264,33 @@ const Calculator = () => {
       if (lastModified === "from") {
         const valueInUSD =
           document.querySelector(".calculator__from-currency-input").value * currency.price;
-        const value =
-          (document.querySelector(".calculator__from-currency-input").value * currency.price) /
-          currentToCurrency.price;
-
         if (isBuyCrypto) {
-          document.querySelector(".calculator__to-currency-input").value = valueWithoutPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__to-currency-input").value = (
+            (document.querySelector(".calculator__from-currency-input").value *
+              valueWithoutPercentage(valueInUSD, currency.price)) /
+            currentToCurrency.price
           ).toFixed(2);
         } else {
-          document.querySelector(".calculator__to-currency-input").value = valueWithPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__to-currency-input").value = (
+            (document.querySelector(".calculator__from-currency-input").value * currency.price) /
+            valueWithPercentage(valueInUSD, currentToCurrency.price)
           ).toFixed(4);
         }
       } else {
         const valueInUSD =
           document.querySelector(".calculator__to-currency-input").value * currentToCurrency.price;
-        const value =
-          (document.querySelector(".calculator__to-currency-input").value *
-            currentToCurrency.price) /
-          currency.price;
 
         if (isBuyCrypto) {
-          document.querySelector(".calculator__from-currency-input").value = valueWithoutPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__from-currency-input").value = (
+            (document.querySelector(".calculator__to-currency-input").value *
+              currentToCurrency.price) /
+            valueWithoutPercentage(valueInUSD, currency.price)
           ).toFixed(4);
         } else {
-          document.querySelector(".calculator__from-currency-input").value = valueWithPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__from-currency-input").value = (
+            (document.querySelector(".calculator__to-currency-input").value *
+              valueWithPercentage(valueInUSD, currentToCurrency.price)) /
+            currency.price
           ).toFixed(2);
         }
       }
@@ -329,39 +322,35 @@ const Calculator = () => {
       if (lastModified === "to") {
         const valueInUSD =
           document.querySelector(".calculator__to-currency-input").value * currency.price;
-        const value =
-          (document.querySelector(".calculator__to-currency-input").value * currency.price) /
-          currentFromCurrency.price;
 
         if (isBuyCrypto) {
-          document.querySelector(".calculator__from-currency-input").value = valueWithoutPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__from-currency-input").value = (
+            (document.querySelector(".calculator__to-currency-input").value * currency.price) /
+            valueWithoutPercentage(valueInUSD, currentFromCurrency.price)
           ).toFixed(4);
         } else {
-          document.querySelector(".calculator__from-currency-input").value = valueWithPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__from-currency-input").value = (
+            (document.querySelector(".calculator__to-currency-input").value *
+              valueWithPercentage(valueInUSD, currency.price)) /
+            currentFromCurrency.price
           ).toFixed(2);
         }
       } else {
         const valueInUSD =
           document.querySelector(".calculator__from-currency-input").value *
           currentFromCurrency.price;
-        const value =
-          (document.querySelector(".calculator__from-currency-input").value *
-            currentFromCurrency.price) /
-          currency.price;
 
         if (isBuyCrypto) {
-          document.querySelector(".calculator__to-currency-input").value = valueWithoutPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__to-currency-input").value = (
+            (document.querySelector(".calculator__from-currency-input").value *
+              valueWithoutPercentage(valueInUSD, currentFromCurrency.price)) /
+            currency.price
           ).toFixed(2);
         } else {
-          document.querySelector(".calculator__to-currency-input").value = valueWithPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__to-currency-input").value = (
+            (document.querySelector(".calculator__from-currency-input").value *
+              currentFromCurrency.price) /
+            valueWithPercentage(valueInUSD, currency.price)
           ).toFixed(4);
         }
       }
@@ -374,6 +363,8 @@ const Calculator = () => {
     if (isSwapLoading) {
       return;
     }
+    closeToCurrency();
+    closeFromCurrency();
     setIsSwapLoading(true);
     if (document.querySelector(".calculator__from-currency-input").value !== "") {
       if (lastModified === "from") {
@@ -383,19 +374,18 @@ const Calculator = () => {
         const valueInUSD =
           document.querySelector(".calculator__from-currency-input").value *
           currentFromCurrency.price;
-        const value =
-          (document.querySelector(".calculator__from-currency-input").value *
-            currentFromCurrency.price) /
-          currentToCurrency.price;
+
         if (isBuyCrypto) {
-          document.querySelector(".calculator__from-currency-input").value = valueWithPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__from-currency-input").value = (
+            (document.querySelector(".calculator__from-currency-input").value *
+              valueWithPercentage(valueInUSD, currentFromCurrency.price)) /
+            currentToCurrency.price
           ).toFixed(2);
         } else {
-          document.querySelector(".calculator__from-currency-input").value = valueWithoutPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__from-currency-input").value = (
+            (document.querySelector(".calculator__from-currency-input").value *
+              currentFromCurrency.price) /
+            valueWithoutPercentage(valueInUSD, currentToCurrency.price)
           ).toFixed(4);
         }
         setLastModified("to");
@@ -405,19 +395,18 @@ const Calculator = () => {
         ).value;
         const valueInUSD =
           document.querySelector(".calculator__to-currency-input").value * currentToCurrency.price;
-        const value =
-          (document.querySelector(".calculator__to-currency-input").value *
-            currentToCurrency.price) /
-          currentFromCurrency.price;
+
         if (isBuyCrypto) {
-          document.querySelector(".calculator__to-currency-input").value = valueWithPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__to-currency-input").value = (
+            (document.querySelector(".calculator__to-currency-input").value *
+              currentToCurrency.price) /
+            valueWithPercentage(valueInUSD, currentFromCurrency.price)
           ).toFixed(4);
         } else {
-          document.querySelector(".calculator__to-currency-input").value = valueWithoutPercentage(
-            valueInUSD,
-            value
+          document.querySelector(".calculator__to-currency-input").value = (
+            (document.querySelector(".calculator__to-currency-input").value *
+              valueWithoutPercentage(valueInUSD, currentToCurrency.price)) /
+            currentFromCurrency.price
           ).toFixed(2);
         }
         setLastModified("from");
