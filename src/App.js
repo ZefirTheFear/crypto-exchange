@@ -21,6 +21,11 @@ function App() {
   const [isShownMenu, setIsShownMenu] = useState(false);
   const [isError, setIsError] = useState(false);
 
+  const [BTC, setBTC] = useState(null);
+  const [ETH, setETH] = useState(null);
+  const [UAHSale, setUAHSale] = useState(null);
+  const [UAHBuy, setUAHBuy] = useState(null);
+
   const scrollTo = node => {
     const headerOffset = 60;
     window.scrollTo({
@@ -44,7 +49,23 @@ function App() {
   };
 
   return (
-    <Context.Provider value={{ scrollTo, isShownMenu, setIsShownMenu, closeMenu, setIsError }}>
+    <Context.Provider
+      value={{
+        scrollTo,
+        isShownMenu,
+        setIsShownMenu,
+        closeMenu,
+        setIsError,
+        BTC,
+        setBTC,
+        ETH,
+        setETH,
+        UAHSale,
+        setUAHSale,
+        UAHBuy,
+        setUAHBuy
+      }}
+    >
       {isError ? (
         <Modal closeModal={closeModal} text="что-то пошло не так. попробуйте еще раз" />
       ) : null}

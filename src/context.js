@@ -4,5 +4,13 @@ export default React.createContext({
   scrollTo: () => {},
   isShownMenu: null,
   setIsShownMenu: () => {},
-  closeMenu: () => {}
+  closeMenu: () => {},
+  BTC: null,
+  setBTC: () => {},
+  ETH: null,
+  setETH: () => {},
+  UAHSAle: null,
+  setUAHSale: () => {},
+  UAHBuy: null,
+  setUAHBuy: () => {}
 });

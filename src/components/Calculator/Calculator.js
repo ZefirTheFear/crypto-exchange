@@ -14,6 +14,7 @@ import ImgUSD from "../../assets/img/usd.png";
 import ImgUAH from "../../assets/img/uah.png";
 
 import "./Calculator.scss";
+import TableForCalc from "../TableForCalc/TableForCalc";
 
 const Calculator = () => {
   const context = useContext(Context);
@@ -45,7 +46,8 @@ const Calculator = () => {
     {
       name: "UAH",
       img: ImgUAH,
-      price: null
+      price: null,
+      priceBuy: null
     }
   ];
 
@@ -53,7 +55,7 @@ const Calculator = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingBinance, setIsLoadingBinance] = useState(true);
-  const [isLoadingUAH, setIsLoadingUAH] = useState(true);
+  const [isLoadingData, setIsLoadingData] = useState(true);
 
   const [isBuyCrypto, setIsBuyCrypto] = useState(true);
   const [isSwapLoading, setIsSwapLoading] = useState(false);
@@ -65,6 +67,8 @@ const Calculator = () => {
   const [currentToCurrency, setCurrentToCurrency] = useState(dataToCurrency[0]);
   const [isToCurrencyOpen, setIsToCurrencyOpen] = useState(false);
 
+  const [percentage, setPercentage] = useState(null);
+
   useEffect(() => {
     fetchPrices();
     fetchUAHUSD();
@@ -72,10 +76,10 @@ const Calculator = () => {
   }, []);
 
   useEffect(() => {
-    if (!isLoadingBinance && !isLoadingUAH) {
+    if (!isLoadingBinance && !isLoadingData) {
       setIsLoading(false);
     }
-  }, [isLoadingBinance, isLoadingUAH]);
+  }, [isLoadingBinance, isLoadingData]);
 
   useEffect(() => {
     setIsSwapLoading(false);
@@ -92,13 +96,14 @@ const Calculator = () => {
       cloneFromCurrencies.forEach(item => {
         if (item.name === "BTC") {
           item.price = resData.symbols.BTCUSDT.last;
+          context.setBTC(resData.symbols.BTCUSDT.last);
         }
         if (item.name === "ETH") {
           item.price = resData.symbols.ETHUSDT.last;
+          context.setETH(resData.symbols.ETHUSDT.last);
         }
       });
       setFromCurrencies(cloneFromCurrencies);
-      console.log(cloneFromCurrencies);
 
       setCurrentFromCurrency(cloneFromCurrencies[0]);
       setIsLoadingBinance(false);
@@ -116,52 +121,55 @@ const Calculator = () => {
         return context.setIsError(true);
       }
       let resData = await response.json();
-      console.log(resData);
       let cloneToCurrencies = cloneDeep(toCurrencies);
       cloneToCurrencies.forEach(item => {
         if (item.name === "UAH") {
           item.price = 1 / resData.usd.buy.rate;
+          item.priceBuy = 1 / resData.usd.sell.rate;
+          context.setUAHBuy(resData.usd.buy.rate);
+          context.setUAHSale(resData.usd.sell.rate);
         }
       });
       setToCurrencies(cloneToCurrencies);
-      console.log(cloneToCurrencies);
 
       setCurrentToCurrency(cloneToCurrencies[0]);
-      setIsLoadingUAH(false);
+
+      setPercentage(resData.cryptoPercentage);
+      setIsLoadingData(false);
     } catch (error) {
       context.setIsError(true);
     }
   };
 
   const valueWithPercentage = (valueInUSD, value) => {
-    if (valueInUSD < 1000) {
-      return value * ((100 + 2) / 100);
-    } else if (valueInUSD >= 1000 && valueInUSD < 5000) {
-      return value * ((100 + 1.7) / 100);
-    } else if (valueInUSD >= 5000 && valueInUSD < 10000) {
-      return value * ((100 + 1.5) / 100);
-    } else if (valueInUSD >= 10000 && valueInUSD < 20000) {
-      return value * ((100 + 1.2) / 100);
-    } else if (valueInUSD >= 20000 && valueInUSD < 50000) {
-      return value * ((100 + 1) / 100);
-    } else if (valueInUSD >= 50000) {
-      return value * ((100 + 0.8) / 100);
+    if (valueInUSD >= percentage.p1.amountFrom && valueInUSD < percentage.p1.amountTo) {
+      return value * ((100 + percentage.p1.percentSale) / 100);
+    } else if (valueInUSD >= percentage.p2.amountFrom && valueInUSD < percentage.p2.amountTo) {
+      return value * ((100 + percentage.p2.percentSale) / 100);
+    } else if (valueInUSD >= percentage.p3.amountFrom && valueInUSD < percentage.p3.amountTo) {
+      return value * ((100 + percentage.p3.percentSale) / 100);
+    } else if (valueInUSD >= percentage.p4.amountFrom && valueInUSD < percentage.p4.amountTo) {
+      return value * ((100 + percentage.p4.percentSale) / 100);
+    } else if (valueInUSD >= percentage.p5.amountFrom && valueInUSD < percentage.p5.amountTo) {
+      return value * ((100 + percentage.p5.percentSale) / 100);
+    } else if (valueInUSD >= percentage.p6.amountFrom) {
+      return value * ((100 + percentage.p6.percentSale) / 100);
     }
   };
 
   const valueWithoutPercentage = (valueInUSD, value) => {
-    if (valueInUSD < 1000) {
-      return value * ((100 - 2) / 100);
-    } else if (valueInUSD >= 1000 && valueInUSD < 5000) {
-      return value * ((100 - 1.7) / 100);
-    } else if (valueInUSD >= 5000 && valueInUSD < 10000) {
-      return value * ((100 - 1.5) / 100);
-    } else if (valueInUSD >= 10000 && valueInUSD < 20000) {
-      return value * ((100 - 1.2) / 100);
-    } else if (valueInUSD >= 20000 && valueInUSD < 50000) {
-      return value * ((100 - 1) / 100);
-    } else if (valueInUSD >= 50000) {
-      return value * ((100 - 0.8) / 100);
+    if (valueInUSD >= percentage.p1.amountFrom && valueInUSD < percentage.p1.amountTo) {
+      return value * ((100 - percentage.p1.percentBuy) / 100);
+    } else if (valueInUSD >= percentage.p2.amountFrom && valueInUSD < percentage.p2.amountTo) {
+      return value * ((100 - percentage.p2.percentBuy) / 100);
+    } else if (valueInUSD >= percentage.p3.amountFrom && valueInUSD < percentage.p3.amountTo) {
+      return value * ((100 - percentage.p3.percentBuy) / 100);
+    } else if (valueInUSD >= percentage.p4.amountFrom && valueInUSD < percentage.p4.amountTo) {
+      return value * ((100 - percentage.p4.percentBuy) / 100);
+    } else if (valueInUSD >= percentage.p5.amountFrom && valueInUSD < percentage.p5.amountTo) {
+      return value * ((100 - percentage.p5.percentBuy) / 100);
+    } else if (valueInUSD >= percentage.p6.amountFrom) {
+      return value * ((100 - percentage.p6.percentBuy) / 100);
     }
   };
 
@@ -189,7 +197,12 @@ const Calculator = () => {
       document.querySelector(".calculator__from-currency-input").value = 9999999;
     }
 
-    const valueInUSD = e.target.value * currentFromCurrency.price;
+    const valueInUSD =
+      e.target.value *
+      (currentFromCurrency.name === "UAH"
+        ? currentFromCurrency.priceBuy
+        : currentFromCurrency.price);
+
     if (isBuyCrypto) {
       document.querySelector(".calculator__to-currency-input").value = (
         (e.target.value * valueWithoutPercentage(valueInUSD, currentFromCurrency.price)) /
@@ -197,7 +210,10 @@ const Calculator = () => {
       ).toFixed(2);
     } else {
       document.querySelector(".calculator__to-currency-input").value = (
-        (e.target.value * currentFromCurrency.price) /
+        (e.target.value *
+          (currentFromCurrency.name === "UAH"
+            ? currentFromCurrency.priceBuy
+            : currentFromCurrency.price)) /
         valueWithPercentage(valueInUSD, currentToCurrency.price)
       ).toFixed(4);
     }
@@ -236,7 +252,9 @@ const Calculator = () => {
     } else {
       document.querySelector(".calculator__from-currency-input").value = (
         (e.target.value * valueWithPercentage(valueInUSD, currentToCurrency.price)) /
-        currentFromCurrency.price
+        (currentFromCurrency.name === "UAH"
+          ? currentFromCurrency.priceBuy
+          : currentFromCurrency.price)
       ).toFixed(2);
     }
   };
@@ -263,7 +281,9 @@ const Calculator = () => {
     if (document.querySelector(".calculator__from-currency-input").value !== "") {
       if (lastModified === "from") {
         const valueInUSD =
-          document.querySelector(".calculator__from-currency-input").value * currency.price;
+          document.querySelector(".calculator__from-currency-input").value *
+          (currency.name === "UAH" ? currency.priceBuy : currency.price);
+
         if (isBuyCrypto) {
           document.querySelector(".calculator__to-currency-input").value = (
             (document.querySelector(".calculator__from-currency-input").value *
@@ -272,7 +292,8 @@ const Calculator = () => {
           ).toFixed(2);
         } else {
           document.querySelector(".calculator__to-currency-input").value = (
-            (document.querySelector(".calculator__from-currency-input").value * currency.price) /
+            (document.querySelector(".calculator__from-currency-input").value *
+              (currency.name === "UAH" ? currency.priceBuy : currency.price)) /
             valueWithPercentage(valueInUSD, currentToCurrency.price)
           ).toFixed(4);
         }
@@ -290,7 +311,7 @@ const Calculator = () => {
           document.querySelector(".calculator__from-currency-input").value = (
             (document.querySelector(".calculator__to-currency-input").value *
               valueWithPercentage(valueInUSD, currentToCurrency.price)) /
-            currency.price
+            (currency.name === "UAH" ? currency.priceBuy : currency.price)
           ).toFixed(2);
         }
       }
@@ -332,7 +353,9 @@ const Calculator = () => {
           document.querySelector(".calculator__from-currency-input").value = (
             (document.querySelector(".calculator__to-currency-input").value *
               valueWithPercentage(valueInUSD, currency.price)) /
-            currentFromCurrency.price
+            (currentFromCurrency.name === "UAH"
+              ? currentFromCurrency.priceBuy
+              : currentFromCurrency.price)
           ).toFixed(2);
         }
       } else {
@@ -349,7 +372,9 @@ const Calculator = () => {
         } else {
           document.querySelector(".calculator__to-currency-input").value = (
             (document.querySelector(".calculator__from-currency-input").value *
-              currentFromCurrency.price) /
+              (currentFromCurrency.name === "UAH"
+                ? currentFromCurrency.priceBuy
+                : currentFromCurrency.price)) /
             valueWithPercentage(valueInUSD, currency.price)
           ).toFixed(4);
         }
@@ -373,13 +398,17 @@ const Calculator = () => {
         ).value;
         const valueInUSD =
           document.querySelector(".calculator__from-currency-input").value *
-          currentFromCurrency.price;
+          (currentFromCurrency.name === "UAH"
+            ? currentFromCurrency.priceBuy
+            : currentFromCurrency.price);
 
         if (isBuyCrypto) {
           document.querySelector(".calculator__from-currency-input").value = (
             (document.querySelector(".calculator__from-currency-input").value *
               valueWithPercentage(valueInUSD, currentFromCurrency.price)) /
-            currentToCurrency.price
+            (currentToCurrency.name === "UAH"
+              ? currentToCurrency.priceBuy
+              : currentToCurrency.price)
           ).toFixed(2);
         } else {
           document.querySelector(".calculator__from-currency-input").value = (
@@ -394,12 +423,15 @@ const Calculator = () => {
           ".calculator__to-currency-input"
         ).value;
         const valueInUSD =
-          document.querySelector(".calculator__to-currency-input").value * currentToCurrency.price;
+          document.querySelector(".calculator__to-currency-input").value *
+          (currentToCurrency.name === "UAH" ? currentToCurrency.priceBuy : currentToCurrency.price);
 
         if (isBuyCrypto) {
           document.querySelector(".calculator__to-currency-input").value = (
             (document.querySelector(".calculator__to-currency-input").value *
-              currentToCurrency.price) /
+              (currentToCurrency.name === "UAH"
+                ? currentToCurrency.priceBuy
+                : currentToCurrency.price)) /
             valueWithPercentage(valueInUSD, currentFromCurrency.price)
           ).toFixed(4);
         } else {
@@ -526,6 +558,7 @@ const Calculator = () => {
             </div>
           </div>
         )}
+        {isLoading ? null : <TableForCalc percentage={percentage} />}
       </div>
     </section>
   );
