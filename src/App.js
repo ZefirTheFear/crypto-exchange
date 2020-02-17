@@ -16,7 +16,6 @@ import Modal from "./components/Modal/Modal";
 import "./App.scss";
 
 smoothscroll.polyfill();
-
 function App() {
   const [isShownMenu, setIsShownMenu] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -69,6 +68,7 @@ function App() {
       {isError ? (
         <Modal closeModal={closeModal} text="что-то пошло не так. попробуйте еще раз" />
       ) : null}
+      <h1 style={{ display: "none" }}>Купить, продать, обменять биткоин и криптовалюты в Киеве</h1>
       <Header />
       <MenuMobile />
       <Hero />

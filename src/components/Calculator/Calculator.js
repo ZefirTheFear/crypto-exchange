@@ -87,7 +87,11 @@ const Calculator = () => {
 
   const fetchPrices = async () => {
     try {
-      const response = await fetch("https://apiv2.bitcoinaverage.com/exchanges/ticker/binance");
+      const response = await fetch("https://apiv2.bitcoinaverage.com/exchanges/ticker/binance", {
+        headers: {
+          "x-ba-key": "MjY4ZmJkNGFiNzJkNDJjNzg4NjkwNDE5NzE2NDMxZGU"
+        }
+      });
       if (response.status !== 200) {
         return context.setIsError(true);
       }
