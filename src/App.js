@@ -1,17 +1,14 @@
 import React, { useState } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import smoothscroll from "smoothscroll-polyfill";
 
-import Header from "./components/Header/Header";
 import Context from "./context";
 
-import Hero from "./components/Hero/Hero";
-import Calculator from "./components/Calculator/Calculator";
-import Exchange from "./components/Exchange/Exchange";
-import AboutUs from "./components/AboutUs/AboutUs";
-import Contacts from "./components/Contacts/Contacts";
-import MenuMobile from "./components/MenuMobile/MenuMobile";
 import Modal from "./components/Modal/Modal";
+
+import Home from "./pages/Home/Home";
+import NotFound from "./pages/NotFound/NotFound";
 
 import "./App.scss";
 
@@ -44,7 +41,9 @@ function App() {
   };
 
   window.onresize = () => {
-    closeMenu();
+    if (isShownMenu) {
+      closeMenu();
+    }
   };
 
   return (
@@ -65,17 +64,15 @@ function App() {
         setUAHBuy
       }}
     >
-      {isError ? (
-        <Modal closeModal={closeModal} text="что-то пошло не так. попробуйте еще раз" />
-      ) : null}
-      <h1 style={{ display: "none" }}>Купить, продать, обменять биткоин и криптовалюты в Киеве</h1>
-      <Header />
-      <MenuMobile />
-      <Hero />
-      <Calculator />
-      <Exchange />
-      <AboutUs />
-      <Contacts />
+      <BrowserRouter>
+        {isError ? (
+          <Modal closeModal={closeModal} text="что-то пошло не так. попробуйте еще раз" />
+        ) : null}
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route component={NotFound} />
+        </Switch>
+      </BrowserRouter>
     </Context.Provider>
   );
 }

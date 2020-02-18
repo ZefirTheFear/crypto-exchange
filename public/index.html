@@ -15,24 +15,29 @@
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="canonical" href="https://cryptotrade.com.ua" />
     <title>Обмен криптовалют Киев. Покупка, продажа, обмен биткоин.</title>
   </head>
   <body>
+    <h1 class="h1-seo" style="position: absolute; top: 0; left: 0;">
+      Купить, продать, обменять биткоин и криптовалюты в Киеве
+    </h1>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-  </body>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158095094-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag("js", new Date());
 
-    gtag("config", "UA-158095094-1");
-  </script>
-  <script>
-    fetch("https://us-central1-cryptotradeinvestgroup.cloudfunctions.net/addVisit");
-  </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158095094-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-158095094-1");
+    </script>
+    <script>
+      fetch("https://us-central1-cryptotradeinvestgroup.cloudfunctions.net/addVisit");
+    </script>
+  </body>
 </html>
