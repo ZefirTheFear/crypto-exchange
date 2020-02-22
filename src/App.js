@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
 import smoothscroll from "smoothscroll-polyfill";
 
@@ -8,6 +8,7 @@ import Context from "./context";
 import Modal from "./components/Modal/Modal";
 
 import Home from "./pages/Home/Home";
+import Article from "./pages/Article/Article";
 import NotFound from "./pages/NotFound/NotFound";
 
 import "./App.scss";
@@ -70,6 +71,9 @@ function App() {
         ) : null}
         <Switch>
           <Route exact path="/" component={Home} />
+          <Redirect from="/index.html" to="/" />
+          <Redirect from="/index.php" to="/" />
+          <Route exact path="/obmen-kriptovalyut" component={Article} />
           <Route component={NotFound} />
         </Switch>
       </BrowserRouter>

@@ -7,6 +7,7 @@ import Calculator from "../../components/Calculator/Calculator";
 import Exchange from "../../components/Exchange/Exchange";
 import AboutUs from "../../components/AboutUs/AboutUs";
 import Contacts from "../../components/Contacts/Contacts";
+import ExchangeKiev from "../../components/ExchangeKiev/ExchangeKiev";
 
 const Home = () => {
   return (
@@ -18,6 +19,7 @@ const Home = () => {
       <Exchange />
       <AboutUs />
       <Contacts />
+      <ExchangeKiev />
     </>
   );
 };

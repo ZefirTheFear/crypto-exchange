@@ -99,12 +99,12 @@ const Calculator = () => {
       let cloneFromCurrencies = cloneDeep(fromCurrencies);
       cloneFromCurrencies.forEach(item => {
         if (item.name === "BTC") {
-          item.price = resData.symbols.BTCUSDT.last;
-          context.setBTC(resData.symbols.BTCUSDT.last);
+          item.price = resData.symbols.BTCUSDT.bid;
+          context.setBTC(resData.symbols.BTCUSDT.bid);
         }
         if (item.name === "ETH") {
-          item.price = resData.symbols.ETHUSDT.last;
-          context.setETH(resData.symbols.ETHUSDT.last);
+          item.price = resData.symbols.ETHUSDT.bid;
+          context.setETH(resData.symbols.ETHUSDT.bid);
         }
       });
       setFromCurrencies(cloneFromCurrencies);
