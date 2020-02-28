@@ -11,6 +11,8 @@ const Exchange = () => {
 
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
+  const [isNameValid, setIsNameValid] = useState(true);
+  const [isNumberValid, setIsNumberValid] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,8 +28,19 @@ const Exchange = () => {
   const sendData = async e => {
     setIsLoading(true);
     e.preventDefault();
-    console.log("name - " + name);
-    console.log("number - " + number);
+    let isFormValid = true;
+    if (name.length === 0) {
+      setIsNameValid(false);
+      isFormValid = false;
+    }
+    if (number.length < 10) {
+      setIsNumberValid(false);
+      isFormValid = false;
+    }
+
+    if (!isFormValid) {
+      return setIsLoading(false);
+    }
 
     try {
       const response = await fetch(
@@ -73,23 +86,33 @@ const Exchange = () => {
             <Spinner />
           ) : (
             <form className="exchange__form" onSubmit={sendData}>
-              <div>
-                <input
-                  type="text"
-                  className="exchange__input"
-                  placeholder="имя"
-                  autoComplete="off"
-                  value={name}
-                  onChange={nameOnChange}
-                />
-                <input
-                  type="tel"
-                  className="exchange__input"
-                  placeholder="телефон"
-                  autoComplete="off"
-                  value={number}
-                  onChange={numberOnChange}
-                />
+              <div className="exchange__inputs">
+                <div className="exchange__form-group">
+                  <input
+                    type="text"
+                    className={"exchange__input" + (isNameValid ? "" : " exchange__input_invalid")}
+                    placeholder="имя"
+                    autoComplete="off"
+                    value={name}
+                    onChange={nameOnChange}
+                    onFocus={() => setIsNameValid(true)}
+                  />
+                  {isNameValid ? null : <small>надо как-то себя назвать</small>}
+                </div>
+                <div className="exchange__form-group">
+                  <input
+                    type="tel"
+                    className={
+                      "exchange__input" + (isNumberValid ? "" : " exchange__input_invalid")
+                    }
+                    placeholder="телефон"
+                    autoComplete="off"
+                    value={number}
+                    onChange={numberOnChange}
+                    onFocus={() => setIsNumberValid(true)}
+                  />
+                  {isNumberValid ? null : <small>минимум 10 знаков</small>}
+                </div>
               </div>
               <button type="submit" className="exchange__btn">
                 перезвоните мне

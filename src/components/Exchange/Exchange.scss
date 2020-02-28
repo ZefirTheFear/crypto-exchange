@@ -38,11 +38,35 @@
   text-align: center;
 }
 
+.exchange__inputs {
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.exchange__form-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 1rem;
+
+  small {
+    position: absolute;
+    bottom: -16px;
+    font-size: 0.8rem;
+    color: $invalid;
+  }
+}
+
 .exchange__input {
   width: 250px;
   height: 50px;
   padding: 10px 15px;
-  margin: 1rem;
   outline: 0;
   border: 0;
   border-radius: 5px;
@@ -50,10 +74,10 @@
   font-size: 2rem;
   text-transform: uppercase;
   color: $exchange-bg;
+}
 
-  @media (max-width: 767px) {
-    width: 250px;
-  }
+.exchange__input_invalid {
+  border: 2px solid $invalid;
 }
 
 .exchange__btn {

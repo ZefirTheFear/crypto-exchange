@@ -9,7 +9,7 @@ import Modal from "./components/Modal/Modal";
 
 import Home from "./pages/Home/Home";
 import Article from "./pages/Article/Article";
-import NotFound from "./pages/NotFound/NotFound";
+// import NotFound from "./pages/NotFound/NotFound";
 
 import "./App.scss";
 
@@ -71,10 +71,11 @@ function App() {
         ) : null}
         <Switch>
           <Route exact path="/" component={Home} />
-          <Redirect from="/index.html" to="/" />
-          <Redirect from="/index.php" to="/" />
           <Route exact path="/obmen-kriptovalyut" component={Article} />
-          <Route component={NotFound} />
+          <Redirect to="/" />
+          {/* <Redirect from="/index.html" to="/" />
+          <Redirect from="/index.php" to="/" />
+          <Route component={NotFound} /> */}
         </Switch>
       </BrowserRouter>
     </Context.Provider>
