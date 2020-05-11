@@ -17,6 +17,26 @@ const TableForCalc = ({ percentage }) => {
   }
   data.percentage = array;
 
+  const formatBuyValue = val => {
+    if (val > 0) {
+      return `-${val}`;
+    } else if (val === 0) {
+      return `0`;
+    } else if (val < 0) {
+      return `+${-val}`;
+    }
+  };
+
+  const formatSellValue = val => {
+    if (val > 0) {
+      return `+${val}`;
+    } else if (val === 0) {
+      return `0`;
+    } else if (val < 0) {
+      return `-${-val}`;
+    }
+  };
+
   return (
     <>
       <div className="table-for-calc">
@@ -43,8 +63,12 @@ const TableForCalc = ({ percentage }) => {
                     <div className="table-for-calc__body-row-item">
                       {item.amountFrom} - {item.amountTo}
                     </div>
-                    <div className="table-for-calc__body-row-item">-{item.percentBuy}</div>
-                    <div className="table-for-calc__body-row-item">+{item.percentSale}</div>
+                    <div className="table-for-calc__body-row-item">
+                      {formatBuyValue(item.percentBuy)}
+                    </div>
+                    <div className="table-for-calc__body-row-item">
+                      {formatSellValue(item.percentSale)}
+                    </div>
                   </div>
                 );
               })}

@@ -3,6 +3,8 @@ import React from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { FaTelegramPlane } from "react-icons/fa";
 import { FaPhone } from "react-icons/fa";
+import { MdGroupAdd } from "react-icons/md";
+import { MdMessage } from "react-icons/md";
 import { FaClock } from "react-icons/fa";
 
 import logo from "../../assets/img/logo_full.svg";
@@ -22,6 +24,11 @@ const Contacts = () => {
       desc: "(093) 146-74-75"
     },
     {
+      title: "message",
+      icon: <MdMessage />,
+      desc: "t.me/cryptotrade_exc"
+    },
+    {
       title: "telegram",
       icon: <FaTelegramPlane />,
       desc: "t.me/cryptotradekyiv"
@@ -33,7 +40,8 @@ const Contacts = () => {
     }
   ];
 
-  const clickUnit = () => {
+  const clickUnit = (link) => {
+    window.open(link);
     window.open("https://t.me/cryptotradekyiv");
   };
 
@@ -43,13 +51,17 @@ const Contacts = () => {
         <div className="contacts__info">
           <img src={logo} alt="logo" className="contacts__logo" />
           <div>
-            {data.map(item => {
-              if (item.title === "telegram") {
+            {data.map((item) => {
+              if (item.title === "telegram" || item.title === "message") {
                 return (
                   <div
                     className="contacts__info-unit contacts__info-unit_telegram"
                     key={item.title}
-                    onClick={clickUnit}
+                    onClick={
+                      item.title === "telegram"
+                        ? () => clickUnit("https://t.me/cryptotradekyiv")
+                        : () => clickUnit("https://t.me/cryptotrade_exc")
+                    }
                   >
                     <span className="contacts__info-unit-icon">{item.icon}</span>
                     <span key={item.title}>{item.desc}</span>
